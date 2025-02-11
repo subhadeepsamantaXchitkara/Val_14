@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine's Card</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to bottom, #ffecf2, #ffd1dc);
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .heart {
+      color: #ff4b6e;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      color: #ff4b6e;
+      margin-bottom: 2rem;
+      font-size: 1.3rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #ff4b6e;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: white;
+      color: #ff4b6e;
+      transition: all 0.3s ease;
+      width: 100px;
+    }
+
+    button:hover {
+      background: #ff4b6e;
+      color: white;
+    }
+
+    #noBtn {
+      position: relative;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      max-width: 90%;
+      width: 280px;
+    }
+
+    .floating-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .floating-heart {
+      position: absolute;
+      color: rgba(255, 75, 110, 0.3);
+      font-size: 1.5rem;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh); }
+      100% { transform: translateY(-100px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-hearts" id="floatingHearts"></div>
+
+  <div class="card">
+    <div class="heart">❤️</div>
+    <h1>Will you be my Valentine?</h1>
+    <div class="buttons">
+      <button onclick="showModal()">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="heart">❤️</div>
+      <h2 style="color: #ff4b6e;">Oh! Nice...</h2>
+      <p>but it was just a prank! 😄</p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const floatingHearts = document.getElementById('floatingHearts');
+    for (let i = 0; i < 6; i++) {
+      createFloatingHeart();
+    }
+
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.textContent = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+      floatingHearts.appendChild(heart);
+
+      heart.addEventListener('animationend', () => {
+        heart.remove();
+        createFloatingHeart();
+      });
+    }
+
+    const noBtn = document.getElementById('noBtn');
+    document.addEventListener('mousemove', (e) => {
+      const noBtnRect = noBtn.getBoundingClientRect();
+      const btnCenterX = noBtnRect.left + noBtnRect.width / 2;
+      const btnCenterY = noBtnRect.top + noBtnRect.height / 2;
+
+      const distanceX = Math.abs(e.clientX - btnCenterX);
+      const distanceY = Math.abs(e.clientY - btnCenterY);
+
+      if (distanceX < 100 && distanceY < 100) {
+        const moveX = (e.clientX - btnCenterX) * 1.5;
+        const moveY = (e.clientY - btnCenterY) * 1.5;
+
+        noBtn.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
+      } else {
+        noBtn.style.transform = 'translate(0, 0)';
+      }
+    });
+
+    const modal = document.getElementById('modal');
+    function showModal() {
+      modal.style.display = 'flex';
+    }
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
